@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Memory/Memory.iml" filepath="$PROJECT_DIR$/Memory/Memory.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MemoryServerClient/MemoryServerClient.iml" filepath="$PROJECT_DIR$/MemoryServerClient/MemoryServerClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SJD 2.iml" filepath="$PROJECT_DIR$/SJD 2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SummerHouseAssignment/SummerHouseAssignment.iml" filepath="$PROJECT_DIR$/SummerHouseAssignment/SummerHouseAssignment.iml" />
+    </modules>
+  </component>
+</project>
