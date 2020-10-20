@@ -159,6 +159,7 @@ public class ServerSocketHandler implements Runnable
             if (ssh.getClientUser().getUsername().equals(user.getUsername()))
             {
               ssh.sendSuffedDeck(shuffeldDeck);
+              System.out.println("Shuffled deck> " + shuffeldDeck);
             }
           }
         }
@@ -170,43 +171,13 @@ public class ServerSocketHandler implements Runnable
           String selectedUser = bothPlayers.get(0);
 
           sendSelectedFirstUser(selectedUser);
-          //System.out.println("Selected first user> " + selectedUser);
-
-          /*List<ServerSocketHandler> conns = connectionPool.getConns();
-          for (ServerSocketHandler ssh : conns) {
-            if (ssh.getClientUser().getUsername().equals(bothPlayers.get(0))) {
-              ssh.sendSelectedFirstUser(selectedUser);
-            }
-          }
-
-          for (ServerSocketHandler ssh : conns) {
-            if (ssh.getClientUser().getUsername().equals(bothPlayers.get(1))) {
-              ssh.sendSelectedFirstUser(selectedUser);
-            }
-          }*/
-
-          /*
-          bothPlayers.add("Karlo"); bothPlayers.add("Gosia");
-          Random random = new Random();
-          int randInt = random.nextInt(2);
-
-          //for(int i = 0; i < bothPlayers.size(); i++) System.out.println("asdasdasd" + bothPlayers.get(i));
-
-          String selectedUser = bothPlayers.get(randInt);
-          //System.out.println("Server, selected user> " + selectedUser);
 
           List<ServerSocketHandler> conns = connectionPool.getConns();
-          for (ServerSocketHandler ssh : conns) {
-            if (ssh.getClientUser().getUsername().equals(bothPlayers.get(0))) {
-              ssh.sendSelectedFirstUser(selectedUser);
-            }
+          for (ServerSocketHandler ssh : conns)
+          {
+            ssh.sendScoreNumber("first", gameModel.getFirstPlayerScore());
+            ssh.sendScoreNumber("second", gameModel.getSecondPlayerScore());
           }
-
-          for (ServerSocketHandler ssh : conns) {
-            if (ssh.getClientUser().getUsername().equals(bothPlayers.get(1))) {
-              ssh.sendSelectedFirstUser(selectedUser);
-            }
-          }*/
         }
         else if (request.type == EventType.SET_OPENED_CARD_TWO_ARG)
         {
@@ -219,22 +190,28 @@ public class ServerSocketHandler implements Runnable
             gameModel.setFirstPlayerOpenedCards(card);
             if (gameModel.getFirstPlayerOpenedCards().size() % 2 == 0)
             {
-              if (gameModel.getFirstPlayerOpenedCards()
-                  .get(gameModel.getFirstPlayerOpenedCards().size() - 1).equals(
-                      gameModel.getFirstPlayerOpenedCards().get(
-                          gameModel.getFirstPlayerOpenedCards().size() - 2)))
+              if (gameModel.getFirstPlayerOpenedCards().get(gameModel.getFirstPlayerOpenedCards().size() - 1).equals(
+                      gameModel.getFirstPlayerOpenedCards().get(gameModel.getFirstPlayerOpenedCards().size() - 2)))
               {
-                /*System.out.println(gameModel.getFirstPlayerOpenedCards()
-                    .get(gameModel.getFirstPlayerOpenedCards().size() - 1) + " "
-                    + gameModel.getFirstPlayerOpenedCards()
-                    .get(gameModel.getFirstPlayerOpenedCards().size() - 2)); */
-
                 gameModel.setFirstPlayerPairedCards(
                     gameModel.getFirstPlayerOpenedCards()
                         .get(gameModel.getFirstPlayerOpenedCards().size() - 1));
                 gameModel.setFirstPlayerPairedCards(
                     gameModel.getFirstPlayerOpenedCards()
                         .get(gameModel.getFirstPlayerOpenedCards().size() - 2));
+
+                gameModel.plusFirstPlayerScore();
+                List<ServerSocketHandler> conns = connectionPool.getConns();
+                for (ServerSocketHandler ssh : conns)
+                {
+                  ssh.sendScoreNumber("first", gameModel.getFirstPlayerScore());
+                  ssh.sendScoreNumber("second", gameModel.getSecondPlayerScore());
+
+                  if(!ssh.getClientUser().getUsername().equals(gameModel.getBothPlayers().get(0)))
+                    ssh.sendPairNotification(gameModel.getBothPlayers().get(0) + " has paired> " +
+                        gameModel.getFirstPlayerPairedCards().get(gameModel.getFirstPlayerPairedCards().size() - 1) + "-" +
+                        gameModel.getFirstPlayerPairedCards().get(gameModel.getFirstPlayerPairedCards().size() - 2));
+                }
 
                 gameModel.setAllPairedCards(
                     gameModel.getFirstPlayerOpenedCards()
@@ -249,12 +226,18 @@ public class ServerSocketHandler implements Runnable
                 ssh.keepOpen(gameModel.getAllPairedCards());
               }
 
-              if (gameModel.getFirstPlayerPairedCards().size() + gameModel
-                  .getSecondPlayerPairedCards().size() == 12)
-                System.out.println(
-                    "game has finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+              if (gameModel.getFirstPlayerPairedCards().size() + gameModel.getSecondPlayerPairedCards().size() == 12)
+              {
+                for (ServerSocketHandler ssh : conns) {
+                  if(gameModel.getFirstPlayerPairedCards().size() < gameModel.getSecondPlayerPairedCards().size())
+                  ssh.sendPairNotification(gameModel.getBothPlayers().get(0) + " has won the game!");
+                  else if(gameModel.getFirstPlayerPairedCards().size() > gameModel.getSecondPlayerPairedCards().size())
+                    ssh.sendPairNotification(gameModel.getBothPlayers().get(1) + " has won the game!");
+                  else
+                    ssh.sendPairNotification("Game has ended tie");
+                }
+              }
 
-              //List<ServerSocketHandler> conns = connectionPool.getConns();
               for (ServerSocketHandler ssh : conns)
               {
                 if (ssh.getClientUser().getUsername()
@@ -280,10 +263,6 @@ public class ServerSocketHandler implements Runnable
                   .equals(gameModel.getSecondPlayerOpenedCards()
                       .get(gameModel.getSecondPlayerOpenedCards().size() - 2)))
               {
-                /*System.out.println(gameModel.getSecondPlayerOpenedCards()
-                    .get(gameModel.getSecondPlayerOpenedCards().size() - 1)
-                    + " " + gameModel.getSecondPlayerOpenedCards()
-                    .get(gameModel.getSecondPlayerOpenedCards().size() - 2));*/
 
                 gameModel.setSecondPlayerPairedCards(
                     gameModel.getSecondPlayerOpenedCards().get(
@@ -291,6 +270,19 @@ public class ServerSocketHandler implements Runnable
                 gameModel.setSecondPlayerPairedCards(
                     gameModel.getSecondPlayerOpenedCards().get(
                         gameModel.getSecondPlayerOpenedCards().size() - 2));
+
+                gameModel.plusSecondPlayerScore();
+                List<ServerSocketHandler> conns = connectionPool.getConns();
+                for (ServerSocketHandler ssh : conns)
+                {
+                  ssh.sendScoreNumber("first", gameModel.getFirstPlayerScore());
+                  ssh.sendScoreNumber("second", gameModel.getSecondPlayerScore());
+
+                  if(!ssh.getClientUser().getUsername().equals(gameModel.getBothPlayers().get(1)))
+                    ssh.sendPairNotification(gameModel.getBothPlayers().get(1) + " has paired> " +
+                        gameModel.getSecondPlayerPairedCards().get(gameModel.getSecondPlayerPairedCards().size() - 1) + "-" +
+                        gameModel.getSecondPlayerPairedCards().get(gameModel.getSecondPlayerPairedCards().size() - 2));
+                }
 
                 gameModel.setAllPairedCards(
                     gameModel.getSecondPlayerOpenedCards().get(
@@ -305,12 +297,18 @@ public class ServerSocketHandler implements Runnable
                 ssh.keepOpen(gameModel.getAllPairedCards());
               }
 
-              if (gameModel.getFirstPlayerPairedCards().size() + gameModel
-                  .getSecondPlayerPairedCards().size() == 12)
-                System.out.println(
-                    "game has finished!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+              if (gameModel.getFirstPlayerPairedCards().size() + gameModel.getSecondPlayerPairedCards().size() == 12)
+              {
+                for (ServerSocketHandler ssh : conns) {
+                  if(gameModel.getFirstPlayerPairedCards().size() < gameModel.getSecondPlayerPairedCards().size())
+                    ssh.sendPairNotification(gameModel.getBothPlayers().get(0) + " has won the game!");
+                  else if(gameModel.getFirstPlayerPairedCards().size() > gameModel.getSecondPlayerPairedCards().size())
+                    ssh.sendPairNotification(gameModel.getBothPlayers().get(1) + " has won the game!");
+                  else
+                    ssh.sendPairNotification("Game has ended tie");
+                }
+              }
 
-              //List<ServerSocketHandler> conns = connectionPool.getConns();
               for (ServerSocketHandler ssh : conns)
               {
                 if (ssh.getClientUser().getUsername()
@@ -326,14 +324,15 @@ public class ServerSocketHandler implements Runnable
               }
             }
           }
-          System.out.println("First player paired cards> " + gameModel
-              .getFirstPlayerPairedCards());
-          System.out.println("Second player paired cards> " + gameModel
-              .getSecondPlayerPairedCards());
+          //System.out.println("First player paired cards> " + gameModel.getFirstPlayerPairedCards());
+          //System.out.println("Second player paired cards> " + gameModel.getSecondPlayerPairedCards());
           //System.out.println("First player cards> " + gameModel.getFirstPlayerOpenedCards());
           //System.out.println("Second player cards> " + gameModel.getSecondPlayerOpenedCards());
         }
-
+        else if(request.type == EventType.RESET)
+        {
+          gameModel.resetAllLists();
+        }
       }
     }
     catch (SocketException e)
@@ -352,7 +351,42 @@ public class ServerSocketHandler implements Runnable
     }
     catch (Exception e)
     {
-      //System.out.println(e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
+  private void sendPairNotification(String s)
+  {
+    Request request = new Request(EventType.SEND_PAIR_NOTIFICATION, s);
+    try
+    {
+      outToClient.reset();
+      outToClient.writeObject(request);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  private void sendScoreNumber(String player, int playerScore)
+  {
+    Request request = null;
+    if(player.equals("first"))
+    {
+      request = new Request(EventType.FIRST_PLAYER_SCORE, playerScore);
+    }
+    else if(player.equals("second"))
+    {
+      request = new Request(EventType.SECOND_PLAYER_SCORE, playerScore);
+    }
+    try
+    {
+      outToClient.reset();
+      outToClient.writeObject(request);
+    }
+    catch (IOException e)
+    {
       e.printStackTrace();
     }
   }

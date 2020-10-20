@@ -12,4 +12,5 @@ public interface Memory extends Subject{
   void getShuffledDeck(User user);
   void getFirstTurn();
   void openedCard(User thisUser, String card);
+  void reset();
 }

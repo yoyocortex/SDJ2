@@ -14,7 +14,8 @@ import java.util.List;
 public class GameViewModel
 {
   private Memory model;
-  private StringProperty card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11, card12;
+  private StringProperty card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11, card12,
+      firstPlayerScore, secondPlayerScore, pairNotification;
   private List<String> shuffledMemoryDeck;
   private SimpleStringProperty firstPlayerTurn;
   private List<String> allPairedCards;
@@ -25,6 +26,10 @@ public class GameViewModel
     this.model.addListener(EventType.SHUFFED_DECK_RESULT.toString(), this::assignCards);
     this.model.addListener(EventType.GET_FIRST_TURN_RESULT.toString(), this::firstTurn);
     this.model.addListener(EventType.KEEP_OPEN.toString(), this::keepOpen);
+    this.model.addListener(EventType.FIRST_PLAYER_SCORE.toString(), this::firstPlayerScore);
+    this.model.addListener(EventType.SECOND_PLAYER_SCORE.toString(), this::secondPlayerScore);
+    this.model.addListener(EventType.SEND_PAIR_NOTIFICATION.toString(), this::pairNotification);
+
 
     shuffledMemoryDeck = new ArrayList<>();
     allPairedCards = new ArrayList<>();
@@ -36,7 +41,36 @@ public class GameViewModel
     card7 = new SimpleStringProperty(); card8 = new SimpleStringProperty();
     card9 = new SimpleStringProperty(); card10 = new SimpleStringProperty();
     card11 = new SimpleStringProperty(); card12 = new SimpleStringProperty();
-    firstPlayerTurn = new SimpleStringProperty("bullshit");
+    firstPlayerScore = new SimpleStringProperty(""); secondPlayerScore = new SimpleStringProperty("");
+    firstPlayerTurn = new SimpleStringProperty(""); pairNotification = new SimpleStringProperty("");
+  }
+
+  private void pairNotification(PropertyChangeEvent event)
+  {
+    String newValue = (String) event.getNewValue();
+    Platform.runLater(() -> pairNotification.set(newValue));
+  }
+
+  private void secondPlayerScore(PropertyChangeEvent event)
+  {
+    Integer newValue = (Integer) event.getNewValue();
+    //System.out.println("newValue> " + newValue);
+    Platform.runLater(() -> {
+      //if(newValue == null || newValue < 0) secondPlayerScore.set("-");
+      //else if (newValue != null) secondPlayerScore.set(String.valueOf(newValue));
+      secondPlayerScore.set(String.valueOf(newValue));
+    });
+  }
+
+  private void firstPlayerScore(PropertyChangeEvent event)
+  {
+    Integer newValue = (Integer) event.getNewValue();
+    //System.out.println("newValue> " + newValue);
+    Platform.runLater(() -> {
+      //if (newValue == null || newValue < 0) firstPlayerScore.set("-");
+      //else if (newValue != null) firstPlayerScore.set(String.valueOf(newValue));
+      firstPlayerScore.set(String.valueOf(newValue));
+    });
   }
 
   private void keepOpen(PropertyChangeEvent event)
@@ -76,6 +110,16 @@ public class GameViewModel
     card11.setValue(shuffledMemoryDeck.get(10)); card12.setValue(shuffledMemoryDeck.get(11));
   }
 
+  public String getPairNotification()
+  {
+    return pairNotification.get();
+  }
+
+  public StringProperty pairNotificationProperty()
+  {
+    return pairNotification;
+  }
+
   public List<String> getAllPairedCards()
   {
     return allPairedCards;
@@ -88,6 +132,26 @@ public class GameViewModel
 
   public SimpleStringProperty firstPlayerTurnProperty() {
     return firstPlayerTurn;
+  }
+
+  public String getFirstPlayerScore()
+  {
+    return firstPlayerScore.get();
+  }
+
+  public StringProperty firstPlayerScoreProperty()
+  {
+    return firstPlayerScore;
+  }
+
+  public String getSecondPlayerScore()
+  {
+    return secondPlayerScore.get();
+  }
+
+  public StringProperty secondPlayerScoreProperty()
+  {
+    return secondPlayerScore;
   }
 
   public void getShuffledDeck(User user)
@@ -223,5 +287,10 @@ public class GameViewModel
   public void openedCard(User thisUser, String card)
   {
     model.openedCard(thisUser, card);
+  }
+
+  public void reset()
+  {
+    model.reset();
   }
 }

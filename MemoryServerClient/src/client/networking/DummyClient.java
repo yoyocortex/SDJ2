@@ -79,6 +79,11 @@ public class DummyClient implements Client
 
   }
 
+  @Override public void reset()
+  {
+
+  }
+
   @Override public void addListener(String name, PropertyChangeListener listener)
   {
     support.addPropertyChangeListener(name, listener);

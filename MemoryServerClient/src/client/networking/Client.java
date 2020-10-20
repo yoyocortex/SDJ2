@@ -13,4 +13,5 @@ public interface Client extends Subject
   void getShuffledDeck(User user);
   void getFirstTurn();
   void openedCard(User thisUser, String card);
+  void reset();
 }

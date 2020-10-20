@@ -13,6 +13,11 @@ public interface GameModel
 
   List<String> getShuffeldDeck();
 
+  void plusFirstPlayerScore();
+  void plusSecondPlayerScore();
+  int getFirstPlayerScore();
+  int getSecondPlayerScore();
+
   List<String> getBothPlayers();
   void setBothPlayers(String player);
   List<String> getFirstPlayerOpenedCards();

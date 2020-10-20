@@ -129,6 +129,12 @@ public class SocketClient implements Client
     sendToServer(request, EventType.SET_OPENED_CARD_TWO_ARG);
   }
 
+  @Override public void reset()
+  {
+    Request request = new Request(EventType.RESET, null);
+    sendToServer(request, EventType.RESET);
+  }
+
   private void sendToServer(Request request, EventType registerResult)
   {
     try

@@ -27,6 +27,9 @@ public class MemoryManager implements Memory{
     this.client.addListener(EventType.SHUFFED_DECK_RESULT.toString(), evt -> support.firePropertyChange(evt));
     this.client.addListener(EventType.GET_FIRST_TURN_RESULT.toString(), evt -> support.firePropertyChange(evt));
     this.client.addListener(EventType.KEEP_OPEN.toString(), evt -> support.firePropertyChange(evt));
+    this.client.addListener(EventType.FIRST_PLAYER_SCORE.toString(), evt -> support.firePropertyChange(evt));
+    this.client.addListener(EventType.SECOND_PLAYER_SCORE.toString(), evt -> support.firePropertyChange(evt));
+    this.client.addListener(EventType.SEND_PAIR_NOTIFICATION.toString(), evt -> support.firePropertyChange(evt));
 
     //this.client.addListener(EventType.GET_FIRST_TURN_RESULT.toString(), evt -> support.firePropertyChange(evt));
     //this.client.addListener(EventType.SHUFFED_DECK_RESULT.toString(), this::shuffedDeck);
@@ -76,6 +79,11 @@ public class MemoryManager implements Memory{
   @Override public void openedCard(User thisUser, String card)
   {
     client.openedCard(thisUser, card);
+  }
+
+  @Override public void reset()
+  {
+    client.reset();
   }
 
   private void onLoginResult(PropertyChangeEvent propertyChangeEvent)

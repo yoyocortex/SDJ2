@@ -94,11 +94,17 @@ public class GameController
   @FXML
   private Label firstPlayer;
 
+  @FXML
+  private Label yourScoreLabel;
+
+  @FXML
+  private Label player2ScoreLabel;
+
   private GameViewModel gameViewModel;
   private User thisUser;
   private boolean cardB1 = true, cardB2 = true, cardB3 = true, cardB4 = true, cardB5 = true, cardB6 = true, cardB7 = true
       , cardB8 = true, cardB9 = true, cardB10 = true, cardB11 = true, cardB12 = true;
-  private List<String> check;
+  private List<String> check, check4Check;
 
   public void init(GameViewModel gameViewModel, User user)
   {
@@ -108,6 +114,9 @@ public class GameController
     this.gameViewModel.getFirstTurn();
 
     check = new ArrayList<>();
+    check4Check = new ArrayList<>();
+    check4Check .add("0");
+    check4Check.add("0");
     //check.add("0");
     //check.add("0");
 
@@ -125,6 +134,9 @@ public class GameController
     labelNo10.textProperty().bind(this.gameViewModel.card10Property());
     labelNo11.textProperty().bind(this.gameViewModel.card11Property());
     labelNo12.textProperty().bind(this.gameViewModel.card12Property());
+    yourScoreLabel.textProperty().bind(this.gameViewModel.firstPlayerScoreProperty());
+    player2ScoreLabel.textProperty().bind(this.gameViewModel.secondPlayerScoreProperty());
+    pairLabel.textProperty().bind(this.gameViewModel.pairNotificationProperty());
 
     Platform.runLater(() -> firstPlayer.textProperty().bind(this.gameViewModel.firstPlayerTurnProperty()));
     //System.out.println("First player turn gggggggggg> " + gameViewModel.firstPlayerTurnProperty().get());
@@ -163,6 +175,89 @@ public class GameController
           group11.setDisable(false);
           group12.setDisable(false);
         }
+
+        onCheckCall();
+
+        if(gameViewModel.getAllPairedCards().size() % 2 == 0 && !gameViewModel.getAllPairedCards().isEmpty())
+        {
+          //System.out.println("inside smth");
+          for(int i = 0; i < gameViewModel.getAllPairedCards().size(); i++)
+          {
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo1.getText()))
+            {
+              //System.out.println("Opened 1");
+              onOpenCards(1);
+              //group1.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo2.getText()))
+            {
+              //System.out.println("Opened 2");
+              onOpenCards(2);
+              //group2.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo3.getText()))
+            {
+              //System.out.println("Opened 3");
+              onOpenCards(3);
+              //group3.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo4.getText()))
+            {
+              //System.out.println("Opened 4");
+              onOpenCards(4);
+              //group4.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo5.getText()))
+            {
+              //System.out.println("Opened 5");
+              onOpenCards(5);
+              //group5.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo6.getText()))
+            {
+              //System.out.println("Opened 6");
+              onOpenCards(6);
+              //group6.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo7.getText()))
+            {
+              //System.out.println("Opened 7");
+              onOpenCards(7);
+              //group7.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo8.getText()))
+            {
+              //System.out.println("Opened 8");
+              onOpenCards(8);
+              //group8.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo9.getText()))
+            {
+              //System.out.println("Opened 9");
+              onOpenCards(9);
+              //group9.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo10.getText()))
+            {
+              //System.out.println("Opened 10");
+              onOpenCards(10);
+              //group10.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo11.getText()))
+            {
+              //System.out.println("Opened 11");
+              onOpenCards(11);
+              //group11.setDisable(true);
+            }
+            if(gameViewModel.getAllPairedCards().get(i).equals(labelNo12.getText()))
+            {
+              //System.out.println("Opened 12");
+              onOpenCards(12);
+              //group12.setDisable(true);
+            }
+          }
+        }
+
       }
     };
     Thread t1 = new Thread(runnable);
@@ -174,16 +269,18 @@ public class GameController
   @FXML
   void onShuffleDeckButton(ActionEvent event) {
     //TODO next round and so on
-    gameViewModel.getShuffledDeck(thisUser);
-    gameViewModel.getFirstTurn();
-    memoryStart();
+    check = new ArrayList<>();
+    check4Check = new ArrayList<>();
+    gameViewModel.reset();
+    //gameViewModel.getShuffledDeck(thisUser);
+    //gameViewModel.getFirstTurn();
+    //memoryStart();
   }
 
   @FXML
   void onMouseClicked(MouseEvent event) {
     if(event.getSource() == group1)
     {
-      check.add(labelNo1.getText());
       if(!cardB1) {
         labelNo1.setVisible(false);
         cardB1 = true;
@@ -193,12 +290,12 @@ public class GameController
         labelNo1.setVisible(true);
         gameViewModel.openedCard(thisUser, gameViewModel.card1Property().get());
         cardB1 = false;
+        check.add(labelNo1.getText());
         //System.out.println("opened");
       }
     }
     else if(event.getSource() == group2)
     {
-      check.add(labelNo2.getText());
       if(!cardB2) {
         labelNo2.setVisible(false);
         cardB2 = true;
@@ -207,6 +304,7 @@ public class GameController
         labelNo2.setVisible(true);
         gameViewModel.openedCard(thisUser, gameViewModel.card2Property().get());
         cardB2 = false;
+        check.add(labelNo2.getText());
       }
     }
     else if(event.getSource() == group3)
@@ -339,59 +437,98 @@ public class GameController
         cardB12 = false;
       }
     }
-    //System.out.println("Check> " + check);
+    System.out.println("Check> " + check);
+    System.out.println("Check4Check> " + check4Check);
+    //onCheckCall();
     //System.out.println("AllPairedCards> " + gameViewModel.getAllPairedCards());
-    //if(check.size() % 2 == 0 && !gameViewModel.getAllPairedCards().isEmpty())
-    if(gameViewModel.getAllPairedCards().size() % 2 == 0 && !gameViewModel.getAllPairedCards().isEmpty())
-    {
-      System.out.println("inside smth");
-      //String card1 = check.get(check.size()-2);
-      //String card2 = check.get(check.size()-1);
-      String pairedCard1 = gameViewModel.getAllPairedCards().get(gameViewModel.getAllPairedCards().size()-2);
-      String pairedCard2 = gameViewModel.getAllPairedCards().get(gameViewModel.getAllPairedCards().size()-1);
-
-      System.out.println("I'm supposed to keep> " + pairedCard1 + ", " + pairedCard2 + " open.");
-
-      if(pairedCard1.equals(labelNo1.getText()))
-        System.out.println("Field no 1");
-      if(pairedCard1.equals(labelNo2.getText()))
-        System.out.println("Field no 2");
-      if(pairedCard1.equals(labelNo3.getText()))
-        System.out.println("Field no 3");
-      if(pairedCard1.equals(labelNo4.getText()))
-        System.out.println("Field no 4");
-      if(pairedCard1.equals(labelNo5.getText()))
-        System.out.println("Field no 5");
-      if(pairedCard1.equals(labelNo6.getText()))
-        System.out.println("Field no 6");
-      if(pairedCard1.equals(labelNo7.getText()))
-        System.out.println("Field no 7");
-      if(pairedCard1.equals(labelNo8.getText()))
-        System.out.println("Field no 8");
-      if(pairedCard1.equals(labelNo9.getText()))
-        System.out.println("Field no 9");
-
-    }
-
-    /*if(!gameViewModel.getAllPairedCards().isEmpty())
-    {
-      if (!gameViewModel.getAllPairedCards()
-          .get(gameViewModel.getAllPairedCards().size() - 1)
-          .equals(check.get(check.size() - 1)) && !gameViewModel.getAllPairedCards().get(gameViewModel.getAllPairedCards().size()
-          - 2).equals(check.get(check.size() - 2)))
-        keepOpen();
-    }*/
   }
 
-  private void keepOpen()
-  {
-    System.out.println("Keep open");
-    List<String> allPairedCards = gameViewModel.getAllPairedCards();
-
-
-    //check.add(gameViewModel.getAllPairedCards().get(gameViewModel.getAllPairedCards().size()-1));
-    //check.add(gameViewModel.getAllPairedCards().get(gameViewModel.getAllPairedCards().size()-2));
-    System.out.println("Check2> " + check);
+  private void onCheckCall() {
+    if(check.size() % 2 == 0 && check.size() > 1 && (
+        !check.get(check.size()-1).equals(check4Check.get(check4Check.size()-1)) ||
+        !check.get(check.size()-2).equals(check4Check.get(check4Check.size()-2))))
+    {
+      for(int x = 0; x < 4; x++)
+      {
+        try
+        {
+          Thread.sleep(1000);
+          System.out.println("Seconds left " + x);
+        }
+        catch (InterruptedException e)
+        {
+          e.printStackTrace();
+        }
+      }
+      //System.out.println(check.size());
+      //System.out.println("sdasdasdads");
+      for (int i = 0; i < check.size(); i++)
+      {
+        if (check.get(i).equals(labelNo1.getText()) && !cardB1)
+        {
+          System.out.println("Close 1");
+          onCloseCards(1);
+        }
+        if (check.get(i).equals(labelNo2.getText()) && !cardB2)
+        {
+          System.out.println("Close 2");
+          onCloseCards(2);
+        }
+        if (check.get(i).equals(labelNo3.getText()) && !cardB3)
+        {
+          System.out.println("Close 3");
+          onCloseCards(3);
+        }
+        if (check.get(i).equals(labelNo4.getText()) && !cardB4)
+        {
+          System.out.println("Close 4");
+          onCloseCards(4);
+        }
+        if (check.get(i).equals(labelNo5.getText()) && !cardB5)
+        {
+          System.out.println("Close 5");
+          onCloseCards(5);
+        }
+        if (check.get(i).equals(labelNo6.getText()) && !cardB6)
+        {
+          System.out.println("Close 6");
+          onCloseCards(6);
+        }
+        if (check.get(i).equals(labelNo7.getText()) && !cardB7)
+        {
+          System.out.println("Close 7");
+          onCloseCards(7);
+        }
+        if (check.get(i).equals(labelNo8.getText()) && !cardB8)
+        {
+          System.out.println("Close 8");
+          onCloseCards(8);
+        }
+        if (check.get(i).equals(labelNo9.getText()) && !cardB9)
+        {
+          System.out.println("Close 9");
+          onCloseCards(9);
+        }
+        if (check.get(i).equals(labelNo10.getText()) && !cardB10)
+        {
+          System.out.println("Close 10");
+          onCloseCards(10);
+        }
+        if (check.get(i).equals(labelNo11.getText()) && !cardB11)
+        {
+          System.out.println("Close 11");
+          onCloseCards(11);
+        }
+        if (check.get(i).equals(labelNo12.getText()) && !cardB12)
+        {
+          System.out.println("Close 12");
+          onCloseCards(12);
+        }
+      }
+      check4Check.add(check.get(check.size()-2));
+      check4Check.add(check.get(check.size()-1));
+      System.out.println("Check4Check " + check4Check);
+    }
   }
 
   private void memoryStart()
@@ -529,87 +666,87 @@ public class GameController
   void onOpenCards(int i) {
     if(i == 1)
     {
-      if(!cardB1) {
+      //if(cardB1) {
         labelNo1.setVisible(true);
         cardB1 = false;
-      }
+      //}
     }
     else if(i == 2)
     {
-      if(!cardB2) {
+      //if(cardB2) {
         labelNo2.setVisible(true);
         cardB2 = false;
-      }
+      //}
     }
     else if(i == 3)
     {
-      if(!cardB3) {
+      //if(cardB3) {
         labelNo3.setVisible(true);
         cardB3 = false;
-      }
+      //}
     }
     else if(i == 4)
     {
-      if(!cardB4) {
+      //if(cardB4) {
         labelNo4.setVisible(true);
         cardB4 = false;
-      }
+      //}
     }
     else if(i == 5)
     {
-      if(!cardB5) {
+      //if(cardB5) {
         labelNo5.setVisible(true);
         cardB5 = false;
-      }
+      //}
     }
     else if(i == 6)
     {
-      if(!cardB6) {
+      //if(cardB6) {
         labelNo6.setVisible(true);
         cardB6 = false;
-      }
+      //}
     }
     else if(i == 7)
     {
-      if(!cardB7) {
+      //if(cardB7) {
         labelNo7.setVisible(true);
         cardB7 = false;
-      }
+      //}
     }
     else if(i == 8)
     {
-      if(!cardB8) {
+      //if(cardB8) {
         labelNo8.setVisible(true);
         cardB8 = false;
-      }
+      //}
     }
     else if(i == 9)
     {
-      if(!cardB9) {
+      //if(cardB9) {
         labelNo9.setVisible(true);
         cardB9 = false;
-      }
+      //}
     }
     else if(i == 10)
     {
-      if(!cardB10) {
+      //if(cardB10) {
         labelNo10.setVisible(true);
         cardB10 = false;
-      }
+      //}
     }
     else if(i == 11)
     {
-      if(!cardB11) {
+      //if(cardB11) {
         labelNo11.setVisible(true);
         cardB11 = false;
-      }
+      //}
     }
     else if(i == 12)
     {
-      if(!cardB12) {
+      //if(cardB12) {
         labelNo12.setVisible(true);
         cardB12 = false;
-      }
+      //}
     }
   }
 }

@@ -17,6 +17,7 @@ public class GameModelManager implements GameModel
   private List<String> firstPlayerPairedCards;
   private List<String> secondPlayerPairedCards;
   private List<String> allPairedCards;
+  private int firstPlayerScore = 0, secondPlayerScore = 0;
 
   public GameModelManager(UserHome userHome, Deck deck)
   {
@@ -93,7 +94,12 @@ public class GameModelManager implements GameModel
 
   @Override public void resetAllLists()
   {
-
+    firstPlayerOpenedCards = new ArrayList<>();
+    secondPlayerOpenedCards = new ArrayList<>();
+    firstPlayerPairedCards = new ArrayList<>();
+    secondPlayerPairedCards = new ArrayList<>();
+    allPairedCards = new ArrayList<>();
+    firstPlayerScore = 0; secondPlayerScore = 0;
   }
 
   @Override public void removeLoggedInUser(User clientUser)
@@ -138,5 +144,24 @@ public class GameModelManager implements GameModel
     return Arrays.asList(memoryDeck.getShuffledDeck());
   }
 
+  @Override public void plusFirstPlayerScore()
+  {
+    firstPlayerScore++;
+  }
+
+  @Override public void plusSecondPlayerScore()
+  {
+    secondPlayerScore++;
+  }
+
+  @Override public int getFirstPlayerScore()
+  {
+    return firstPlayerScore;
+  }
+
+  @Override public int getSecondPlayerScore()
+  {
+    return secondPlayerScore;
+  }
 
 }

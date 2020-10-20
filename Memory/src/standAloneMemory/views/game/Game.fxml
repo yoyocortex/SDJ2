@@ -112,5 +112,6 @@
             <Font size="18.0" />
          </font>
       </Label>
+      <Label fx:id="playerLabel" layoutX="533.0" layoutY="68.0" text="Label" />
    </children>
 </AnchorPane>
