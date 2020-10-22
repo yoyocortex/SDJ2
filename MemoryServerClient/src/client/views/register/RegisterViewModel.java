@@ -26,13 +26,11 @@ public class RegisterViewModel
   private void onRegisterResponse(PropertyChangeEvent event)
   {
     String result = (String) event.getNewValue();
-    System.out.println("RegisterVM result; " + result);
     Platform.runLater(() -> registerResponse.set(result));
   }
 
   public void register()
   {
-    //System.out.println(username.get() + " " + password.get() + " " + repeatPassword.get());
     if (username.get() == null || username.get().equals(""))
     {
       registerResponse.set("Username can not be empty.");

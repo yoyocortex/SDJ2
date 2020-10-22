@@ -28,7 +28,6 @@ public class MemoryServer
         System.out.println("Waiting for client...");
         Socket socket = serverSocket.accept();
         ServerSocketHandler ssh = new ServerSocketHandler(gameModel, socket, connectionPool);
-        //connectionPool.addConnection(ssh);
         new Thread(ssh).start();
         System.out.println("Client connected.");
       }

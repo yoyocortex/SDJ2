@@ -102,6 +102,11 @@ public class GameModelManager implements GameModel
     firstPlayerScore = 0; secondPlayerScore = 0;
   }
 
+  @Override public void shuffleDeck()
+  {
+    memoryDeck.shuffleDeck();
+  }
+
   @Override public void removeLoggedInUser(User clientUser)
   {
     userHome.removeOnlineUser(clientUser);

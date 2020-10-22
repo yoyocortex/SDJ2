@@ -36,20 +36,17 @@ public class LoginController
     {
       errorLabel.setTextFill(Color.GREEN);
       viewHandler.openStartMenuView();
-      //System.out.println("Swap to lobby view");
     }
     errorLabel.setTextFill(Color.RED);
   }
 
   @FXML
   void onLoginButton(ActionEvent event) {
-    //System.out.println("Log in pressed");
     loginViewModel.login();
   }
 
   @FXML
   void onRegisterButton(ActionEvent event) {
-    //System.out.println("Register pressed");
     viewHandler.openRegisterView();
   }
 }

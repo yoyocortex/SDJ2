@@ -19,6 +19,7 @@ public class GameViewModel
   private List<String> shuffledMemoryDeck;
   private SimpleStringProperty firstPlayerTurn;
   private List<String> allPairedCards;
+  private String resetString = "smth";
 
   public GameViewModel(Memory model)
   {
@@ -29,12 +30,11 @@ public class GameViewModel
     this.model.addListener(EventType.FIRST_PLAYER_SCORE.toString(), this::firstPlayerScore);
     this.model.addListener(EventType.SECOND_PLAYER_SCORE.toString(), this::secondPlayerScore);
     this.model.addListener(EventType.SEND_PAIR_NOTIFICATION.toString(), this::pairNotification);
+    this.model.addListener(EventType.RESET_RESULT.toString(), this::reset);
 
 
     shuffledMemoryDeck = new ArrayList<>();
     allPairedCards = new ArrayList<>();
-    //allPairedCards.add("0");
-    //allPairedCards.add("0");
     card1 = new SimpleStringProperty(); card2 = new SimpleStringProperty();
     card3 = new SimpleStringProperty(); card4 = new SimpleStringProperty();
     card5 = new SimpleStringProperty(); card6 = new SimpleStringProperty();
@@ -43,6 +43,11 @@ public class GameViewModel
     card11 = new SimpleStringProperty(); card12 = new SimpleStringProperty();
     firstPlayerScore = new SimpleStringProperty(""); secondPlayerScore = new SimpleStringProperty("");
     firstPlayerTurn = new SimpleStringProperty(""); pairNotification = new SimpleStringProperty("");
+  }
+
+  private void reset(PropertyChangeEvent event)
+  {
+    resetString = (String) event.getNewValue();
   }
 
   private void pairNotification(PropertyChangeEvent event)
@@ -54,49 +59,29 @@ public class GameViewModel
   private void secondPlayerScore(PropertyChangeEvent event)
   {
     Integer newValue = (Integer) event.getNewValue();
-    //System.out.println("newValue> " + newValue);
-    Platform.runLater(() -> {
-      //if(newValue == null || newValue < 0) secondPlayerScore.set("-");
-      //else if (newValue != null) secondPlayerScore.set(String.valueOf(newValue));
-      secondPlayerScore.set(String.valueOf(newValue));
-    });
+    Platform.runLater(() -> secondPlayerScore.set(String.valueOf(newValue)));
   }
 
   private void firstPlayerScore(PropertyChangeEvent event)
   {
     Integer newValue = (Integer) event.getNewValue();
-    //System.out.println("newValue> " + newValue);
-    Platform.runLater(() -> {
-      //if (newValue == null || newValue < 0) firstPlayerScore.set("-");
-      //else if (newValue != null) firstPlayerScore.set(String.valueOf(newValue));
-      firstPlayerScore.set(String.valueOf(newValue));
-    });
+    Platform.runLater(() -> firstPlayerScore.set(String.valueOf(newValue)));
   }
 
   private void keepOpen(PropertyChangeEvent event)
   {
     allPairedCards = (List<String>) event.getNewValue();
-    /*if(allPairedCards.isEmpty())
-    {
-      allPairedCards.add("0");
-      allPairedCards.add("0");
-    }*/
-    System.out.println("AllPairedCards in GVM> " + allPairedCards);
   }
 
   private void firstTurn(PropertyChangeEvent event)
   {
     String firstUser = (String) event.getNewValue();
-    //Platform.runLater(() -> firstPlayerTurn.set(firstUser));
     Platform.runLater(() -> firstPlayerTurn.set(firstUser));
-    //System.out.println("First user should be> "  + firstPlayerTurn.get());
   }
 
   private void assignCards(PropertyChangeEvent event)
   {
-    //System.out.println("Does it even come to here?");
     shuffledMemoryDeck = (List<String>) event.getNewValue();
-    System.out.println("GameViewModel, shuffled cards> " + shuffledMemoryDeck);
     Platform.runLater(() -> assign());
   }
 
@@ -108,6 +93,16 @@ public class GameViewModel
     card7.setValue(shuffledMemoryDeck.get(6)); card8.setValue(shuffledMemoryDeck.get(7));
     card9.setValue(shuffledMemoryDeck.get(8)); card10.setValue(shuffledMemoryDeck.get(9));
     card11.setValue(shuffledMemoryDeck.get(10)); card12.setValue(shuffledMemoryDeck.get(11));
+  }
+
+  public String getResetString()
+  {
+    return resetString;
+  }
+
+  public void setResetString(String resetString)
+  {
+    this.resetString = resetString;
   }
 
   public String getPairNotification()

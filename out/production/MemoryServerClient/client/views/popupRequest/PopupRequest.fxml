@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="100.0" prefWidth="215.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.views.popupRequest.PopupRequestController">
+<AnchorPane maxHeight="100.0" maxWidth="215.0" minHeight="100.0" minWidth="215.0" prefHeight="100.0" prefWidth="215.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.views.popupRequest.PopupRequestController">
    <children>
-      <Text layoutX="9.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you want to play againt this user?" />
-      <Label fx:id="userLabel" alignment="CENTER" layoutX="3.0" layoutY="43.0" prefHeight="18.0" prefWidth="209.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e1f5c4" height="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="215.0" />
+      <Text fill="#fc913a" layoutX="9.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you want to play againt this user?" />
+      <Label fx:id="userLabel" alignment="CENTER" layoutX="3.0" layoutY="36.0" prefHeight="22.0" prefWidth="210.0" textFill="#ff4e50" />
       <HBox alignment="CENTER" layoutX="5.0" layoutY="61.0" prefHeight="34.0" prefWidth="206.0" spacing="30.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#onYesButton" text="Yes" />
-            <Button mnemonicParsing="false" onAction="#onNoButton" text="No" />
+            <Button mnemonicParsing="false" onAction="#onYesButton" style="-fx-background-color: #e1f5c4; -fx-border-color: #fc913a;" text="Yes" textFill="#ff4e50">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Button>
+            <Button mnemonicParsing="false" onAction="#onNoButton" style="-fx-background-color: #e1f5c4; -fx-border-color: #fc913a;" text="No" textFill="#ff4e50">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Button>
          </children>
       </HBox>
    </children>

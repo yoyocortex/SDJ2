@@ -1,7 +1,6 @@
 package client.core;
 
 import client.networking.Client;
-import client.networking.DummyClient;
 import client.networking.SocketClient;
 
 public class ClientFactory

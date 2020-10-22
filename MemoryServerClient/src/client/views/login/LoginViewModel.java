@@ -24,12 +24,10 @@ public class LoginViewModel
   private void onLoginResult(PropertyChangeEvent event)
   {
     String result = (String) event.getNewValue();
-    System.out.println("LoginVM result; " + result);
     Platform.runLater(() -> loginResult.set(result));
   }
 
   public void login() {
-    //System.out.println(username.get() + " " + password.get());
     model.login(username.get(), password.get());
   }
 

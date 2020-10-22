@@ -18,7 +18,6 @@ public class ConnectionPool
     for (ServerSocketHandler c : conns)
     {
       List<User> onlineUsers = (List<User>) obj.arg;
-      //System.out.println(c + " " + onlineUsers);
       c.sendUserList(obj);
     }
   }

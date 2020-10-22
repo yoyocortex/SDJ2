@@ -35,7 +35,6 @@ public class PopupRequestController {
     popupRequestViewModel.openGameView(enemy, host);
     Stage stage = (Stage) userLabel.getScene().getWindow();
     stage.close();
-    //System.exit(0);
   }
 
 }

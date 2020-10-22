@@ -5,8 +5,6 @@ import client.views.login.LoginController;
 import client.views.popupRequest.PopupRequestController;
 import client.views.register.RegisterController;
 import client.views.startmenu.StartMenuController;
-import com.sun.javafx.stage.EmbeddedWindow;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

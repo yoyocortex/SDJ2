@@ -6,7 +6,6 @@ public class MemoryDeck implements Deck
 {
   private static String[] deck = {"1","2","3","4","5","6","6","5","4","3","2","1"};
   private String[] shuffledDeck = deck;
-  //private Memory memoryModel;
 
   public MemoryDeck() {
     shuffleDeck(shuffledDeck);
@@ -19,10 +18,12 @@ public class MemoryDeck implements Deck
 
   @Override public String[] getShuffledDeck()
   {
-    /*for (int i = 0; i < shuffledDeck.length; i++)
-      System.out.print(shuffledDeck[i]);
-    */
     return shuffledDeck;
+  }
+
+  @Override public void shuffleDeck()
+  {
+    shuffleDeck(shuffledDeck);
   }
 
   static void shuffleDeck(String[] deck)

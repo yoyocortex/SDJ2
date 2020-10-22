@@ -42,7 +42,6 @@ public class StartMenuViewModel
   private void openGameView(PropertyChangeEvent event)
   {
     User user = (User) event.getNewValue();
-    System.out.println("User name of this window or whatever> " + user.getUsername());
     Platform.runLater(() -> viewHandler.openGameView(user));
   }
 
@@ -50,7 +49,6 @@ public class StartMenuViewModel
   {
     enemyUserUser = (User) event.getNewValue();
     enemyUser.set(enemyUserUser.getUsername());
-    //System.out.println("StartMenuViewModel, User im supposed to play against> " + enemyUser.get());
     Platform.runLater(() -> viewHandler.openPopupRequestView(enemyUser.get(), loggedInUser.get()));
   }
 
@@ -63,13 +61,11 @@ public class StartMenuViewModel
   private void onUserList(PropertyChangeEvent event)
   {
     onlineUsers = (List<User>) event.getNewValue();
-    //System.out.println(onlineUsers);
     List<String> userUsernames = new ArrayList<>();
     for (User u : onlineUsers) {
       userUsernames.add(u.getUsername());
     }
     Platform.runLater(() -> listProperty.set(FXCollections.observableArrayList(userUsernames)));
-    //listProperty.set(FXCollections.observableArrayList(userUsernames));
   }
 
   public ListProperty<String> listPropertyProperty()
@@ -94,7 +90,6 @@ public class StartMenuViewModel
 
   public void requestDuel(String selectedItem)
   {
-    //System.out.println("StartMenuViewModel, requestDuel");
     model.requestDuel(selectedItem);
   }
 

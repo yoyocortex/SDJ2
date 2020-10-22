@@ -56,25 +56,20 @@ public class InMemoryUsers implements UserHome
   @Override public String registerUser(User user)
   {
     registerUsers.add(user);
-    //System.out.println(users);
     return "OK";
   }
 
   @Override public List<User> getAllOnlineUsers()
   {
-    //System.out.println(users);
     return loggedInUsers;
   }
 
   @Override public void removeOnlineUser(User user)
   {
-    //System.out.println(loggedInUsers);
     for(int i = 0; i < loggedInUsers.size(); i++)
     {
       if(loggedInUsers.get(i).getUsername().equals(user.getUsername()))
         loggedInUsers.remove(i);
-      //break;
     }
-    //System.out.println(loggedInUsers);
   }
 }

@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface GameModel
 {
+  void shuffleDeck();
+
   String validateUser(User user);
   String registerUser(User user);
   void removeLoggedInUser(User clientUser);
@@ -30,5 +32,6 @@ public interface GameModel
   void setSecondPlayerPairedCards(String card);
   List<String> getAllPairedCards();
   void setAllPairedCards(String card);
+
   void resetAllLists();
 }

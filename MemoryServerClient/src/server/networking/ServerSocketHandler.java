@@ -10,9 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ServerSocketHandler implements Runnable
 {
@@ -33,7 +31,6 @@ public class ServerSocketHandler implements Runnable
 
     outToClient = new ObjectOutputStream(socket.getOutputStream());
     inFromClient = new ObjectInputStream(socket.getInputStream());
-    System.out.println(connectionPool.getConns());
   }
 
   @Override public void run()
@@ -43,7 +40,6 @@ public class ServerSocketHandler implements Runnable
       while (true)
       {
         Request request = (Request) inFromClient.readObject();
-        //System.out.println(request);
         if (request.type == EventType.LOGIN_REQUEST)
         {
           User user = (User) request.arg;
@@ -54,7 +50,6 @@ public class ServerSocketHandler implements Runnable
 
           Request response = new Request(EventType.LOGIN_RESULT, result);
           outToClient.writeObject(response);
-          //System.out.println("This is log in result from ssh> " + result);
         }
         else if (request.type == EventType.REGISTER_REQUEST)
         {
@@ -70,13 +65,9 @@ public class ServerSocketHandler implements Runnable
           Request response = new Request(EventType.USERSLIST_RESULT,
               onlineUsers);
           connectionPool.broadcast(response);
-          //outToClient.reset();
-          //outToClient.writeObject(response);
-          //System.out.println(onlineUsers);
         }
         else if (request.type == EventType.DUEL_REQUEST)
         {
-          //System.out.println("it came to here at least " + request.arg);
           List<User> onlineUsers = gameModel.getAllOnlineUsers();
           User enemy = null;
           for (User u : onlineUsers)
@@ -84,25 +75,20 @@ public class ServerSocketHandler implements Runnable
             if (u.getUsername().equals(request.arg.toString()))
             {
               enemy = u;
-              //System.out.println("Enemy user; " + enemy.getUsername());
             }
           }
-          //System.out.println("My name is; " + clientUser.getUsername());
           List<ServerSocketHandler> conns = connectionPool.getConns();
           for (ServerSocketHandler ssh : conns)
           {
-            //System.out.println(ssh.clientUser.getUsername() + " " + ssh);
             if (ssh.getClientUser().getUsername().equals(enemy.getUsername()))
             {
               ssh.requestToOpenEnemyPopup(clientUser);
-              //System.out.println("Im sending from server request for duel!");
             }
           }
         }
         else if (request.type == EventType.OPEN_GAME_VIEW_REQUEST)
         {
           List<String> twoInOne = (List<String>) request.arg;
-          //System.out.println("List of enemy and host; " + twoInOne);
           List<User> onlineUsers = gameModel.getAllOnlineUsers();
           int count = 0;
           User enemy = null;
@@ -114,8 +100,6 @@ public class ServerSocketHandler implements Runnable
             {
               enemy = u;
               gameModel.setBothPlayers(enemy.getUsername());
-              //System.out.println("Enemy> " + enemy.getUsername());
-              //bothPlayers.set(0,enemy.getUsername());
             }
           }
 
@@ -126,8 +110,6 @@ public class ServerSocketHandler implements Runnable
             {
               host = u;
               gameModel.setBothPlayers(host.getUsername());
-              //System.out.println("Host> " + host.getUsername());
-              //bothPlayers.set(1,host.getUsername());
             }
           }
 
@@ -151,7 +133,6 @@ public class ServerSocketHandler implements Runnable
         else if (request.type == EventType.SHUFFED_DECK_REQUEST)
         {
           User user = (User) request.arg;
-          //System.out.println(user.getUsername());
           List<String> shuffeldDeck = gameModel.getShuffeldDeck();
           List<ServerSocketHandler> conns = connectionPool.getConns();
           for (ServerSocketHandler ssh : conns)
@@ -159,14 +140,12 @@ public class ServerSocketHandler implements Runnable
             if (ssh.getClientUser().getUsername().equals(user.getUsername()))
             {
               ssh.sendSuffedDeck(shuffeldDeck);
-              System.out.println("Shuffled deck> " + shuffeldDeck);
             }
           }
         }
         else if (request.type == EventType.GET_FIRST_TURN_REQUEST)
         {
           List<String> bothPlayers = gameModel.getBothPlayers();
-          System.out.println(gameModel.getBothPlayers());
 
           String selectedUser = bothPlayers.get(0);
 
@@ -183,7 +162,6 @@ public class ServerSocketHandler implements Runnable
         {
           User user = (User) request.arg;
           String card = (String) request.secondsArg;
-          System.out.println(card);
 
           if (user.getUsername().equals(gameModel.getBothPlayers().get(0)))
           {
@@ -324,14 +302,31 @@ public class ServerSocketHandler implements Runnable
               }
             }
           }
-          //System.out.println("First player paired cards> " + gameModel.getFirstPlayerPairedCards());
-          //System.out.println("Second player paired cards> " + gameModel.getSecondPlayerPairedCards());
-          //System.out.println("First player cards> " + gameModel.getFirstPlayerOpenedCards());
-          //System.out.println("Second player cards> " + gameModel.getSecondPlayerOpenedCards());
         }
         else if(request.type == EventType.RESET)
         {
           gameModel.resetAllLists();
+          gameModel.shuffleDeck();
+
+          List<ServerSocketHandler> conns = connectionPool.getConns();
+          for (ServerSocketHandler ssh : conns) {
+            ssh.keepOpen(gameModel.getAllPairedCards());
+            ssh.sendPairNotification("Game restarted!");
+          }
+
+          Request response = new Request(EventType.RESET_RESULT, "Restarted");
+          try
+          {
+            for (ServerSocketHandler ssh : conns)
+            {
+              ssh.outToClient.reset();
+              ssh.outToClient.writeObject(response);
+            }
+          }
+          catch (IOException e)
+          {
+            e.printStackTrace();
+          }
         }
       }
     }
@@ -347,7 +342,6 @@ public class ServerSocketHandler implements Runnable
       {
         ioException.printStackTrace();
       }
-      System.out.println(e.getMessage());
     }
     catch (Exception e)
     {

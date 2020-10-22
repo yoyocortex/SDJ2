@@ -46,30 +46,11 @@ public class SocketClient implements Client
     {
       inFromServer = new ObjectInputStream(socket.getInputStream());
       outToServer = new ObjectOutputStream(socket.getOutputStream());
-      //inFromServer.reset();
-      //outToServer.reset();
 
       while (true)
       {
         Request request = (Request) inFromServer.readObject();
         support.firePropertyChange(request.type.toString(), null, request.arg);
-
-        /*if(request.type.toString().equals(EventType.DUEL_RESULT.toString()))
-        {
-          User arg = (User) request.arg;
-          System.out.println("SocketClient> " + arg);
-        }*/
-
-        /*if(request.type.toString().equals(EventType.USERSLIST_RESULT.toString()))
-        {
-          List<User> arg = (List<User>) request.arg;
-          System.out.println("SocketClient> " + arg);
-        }*/
-
-        /*if (request.type == EventType.LOGIN_REQUEST)
-        {
-          support.firePropertyChange(EventType.LOGIN_RESULT.toString(), null, request.arg);
-        }*/
       }
     }
     catch (IOException | ClassNotFoundException e)
@@ -98,7 +79,6 @@ public class SocketClient implements Client
 
   @Override public void requestDuel(String selectedItem)
   {
-    //System.out.println("SocketClient, requestDuel");
     Request request = new Request(EventType.DUEL_REQUEST, selectedItem);
     sendToServer(request, EventType.DUEL_REQUEST);
   }

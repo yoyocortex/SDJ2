@@ -30,22 +30,12 @@ public class MemoryManager implements Memory{
     this.client.addListener(EventType.FIRST_PLAYER_SCORE.toString(), evt -> support.firePropertyChange(evt));
     this.client.addListener(EventType.SECOND_PLAYER_SCORE.toString(), evt -> support.firePropertyChange(evt));
     this.client.addListener(EventType.SEND_PAIR_NOTIFICATION.toString(), evt -> support.firePropertyChange(evt));
-
-    //this.client.addListener(EventType.GET_FIRST_TURN_RESULT.toString(), evt -> support.firePropertyChange(evt));
-    //this.client.addListener(EventType.SHUFFED_DECK_RESULT.toString(), this::shuffedDeck);
-  }
-
-  private void shuffedDeck(PropertyChangeEvent event)
-  {
-    List<String> newValue = (List<String>) event.getNewValue();
-    //System.out.println("MemoryManager, shuffled cards> " + newValue);
-    support.firePropertyChange(EventType.SHUFFED_DECK_RESULT.toString(), null, newValue);
+    this.client.addListener(EventType.RESET_RESULT.toString(), evt -> support.firePropertyChange(evt));
   }
 
   private void onAllUsers(PropertyChangeEvent event)
   {
     List<User> newValue = (List<User>) event.getNewValue();
-    //System.out.println("MemoryManager> " + newValue);
     support.firePropertyChange(EventType.USERSLIST_RESULT.toString(), null, newValue);
   }
 
@@ -57,7 +47,6 @@ public class MemoryManager implements Memory{
 
   @Override public void requestDuel(String selectedItem)
   {
-    //System.out.println("MemoryManager, requestDuel");
     client.requestDuel(selectedItem);
   }
 
@@ -90,26 +79,21 @@ public class MemoryManager implements Memory{
   {
     String loginResult = (String) propertyChangeEvent.getNewValue();
 
-    //System.out.println("Result received in model; " + loginResult);
-
     if(!loginResult.equals("OK"))
     {
       loggedInUser = null;
     }
-    //System.out.println("Memory Manager: logged in user - " + loggedInUser);
     support.firePropertyChange(EventType.LOGIN_RESULT.toString(), null, loginResult);
   }
 
   @Override public void register(String username, String password, String repeatPassword)
   {
-    //System.out.println("MemoryManager; " + username + " " + password);
     User userToCreate = new User(username, password);
     client.registerUser(userToCreate);
   }
 
   @Override public void login(String username, String password)
   {
-    //System.out.println(username + " " + password);
     loggedInUser = new User(username,password);
     client.login(loggedInUser);
   }
