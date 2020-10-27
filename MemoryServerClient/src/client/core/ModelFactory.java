@@ -1,7 +1,7 @@
 package client.core;
 
-import client.model.Memory;
-import client.model.MemoryManager;
+import client.clientmodel.Memory;
+import client.clientmodel.MemoryManager;
 
 public class ModelFactory
 {

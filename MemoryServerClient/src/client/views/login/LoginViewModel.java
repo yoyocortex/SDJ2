@@ -1,6 +1,6 @@
 package client.views.login;
 
-import client.model.Memory;
+import client.clientmodel.Memory;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import sharedClasses.transferObject.EventType;

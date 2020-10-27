@@ -1,6 +1,6 @@
 package client.views.popupRequest;
 
-import client.model.Memory;
+import client.clientmodel.Memory;
 
 public class PopupRequestViewModel
 {

@@ -1,4 +1,4 @@
-package client.model;
+package client.clientmodel;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

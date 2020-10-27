@@ -1,4 +1,4 @@
-package client.model;
+package client.clientmodel;
 
 import client.networking.Client;
 import sharedClasses.transferObject.EventType;

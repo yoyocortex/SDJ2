@@ -3,7 +3,7 @@ package view.firstView;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import mediator.TemperatureModel;
-import client.model.Temperature;
+import client.clientmodel.Temperature;
 
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;

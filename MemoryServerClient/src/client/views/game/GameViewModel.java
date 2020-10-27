@@ -1,6 +1,6 @@
 package client.views.game;
 
-import client.model.Memory;
+import client.clientmodel.Memory;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

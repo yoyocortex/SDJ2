@@ -1,6 +1,6 @@
 package mediator;
 
-import client.model.Temperature;
+import client.clientmodel.Temperature;
 import sharedClasses.util.Subject;
 import java.util.List;
 

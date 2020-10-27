@@ -1,7 +1,7 @@
 package client.views.startmenu;
 
 import client.core.ViewHandler;
-import client.model.Memory;
+import client.clientmodel.Memory;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
