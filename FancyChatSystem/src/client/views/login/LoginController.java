@@ -1,12 +1,10 @@
 package client.views.login;
 
 import client.core.ViewHandler;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 
 public class LoginController
 {
@@ -22,7 +20,6 @@ public class LoginController
     @FXML
     void onLoginButton(ActionEvent event) {
       System.out.println("Login button.");
-      //Platform.exit();
       loginViewModel.loginRequest();
     }
 

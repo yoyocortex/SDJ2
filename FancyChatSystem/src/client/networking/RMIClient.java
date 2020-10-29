@@ -2,7 +2,8 @@ package client.networking;
 
 import shared.networking.ClientCallBack;
 import shared.networking.RMIServer;
-import shared.util.Subject;
+import shared.util.Message;
+import shared.util.User;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -11,11 +12,13 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 public class RMIClient implements ClientCallBack, Client
 {
   private PropertyChangeSupport support;
   private RMIServer RMIServer;
+  private User thisUser;
 
   public RMIClient()
   {
@@ -34,8 +37,7 @@ public class RMIClient implements ClientCallBack, Client
 
   @Override public void loginRequest(String username, String password)
   {
-    //System.out.println("Client before server > " + username + " " + password);
-
+    thisUser = new User(username, password);
     try
     {
       RMIServer.loginRequest(username, password, this);
@@ -58,21 +60,55 @@ public class RMIClient implements ClientCallBack, Client
     }
   }
 
+  @Override public void onlineUsersRequest()
+  {
+    try
+    {
+      RMIServer.onlineUsersRequest();
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  @Override public void sendMessage(Message message)
+  {
+    try
+    {
+      RMIServer.sendMessage(message);
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
   @Override public void loginResultServer(String loginResult)
   {
-    System.out.println("Login result in client after server > " + loginResult);
+    if(!"OK".equals(loginResult)) thisUser = new User("", "");
     support.firePropertyChange("LoginResult", null, loginResult);
   }
 
   @Override public void registerResultServer(String registerResult)
   {
-    System.out.println("Register result in client after server > " + registerResult);
     support.firePropertyChange("RegisterResult", null, registerResult);
   }
 
   @Override public void pingClient()
   {
-    System.out.println("Ping has arrived!");
+    //System.out.println("Ping has arrived!");
+  }
+
+  @Override public void sendUpdatedOnlineUserList(List<User> onlineUsers)
+  {
+    support.firePropertyChange("OnlineUsers", null, onlineUsers);
+    support.firePropertyChange("LoggedInAs", null, thisUser);
+  }
+
+  @Override public void messageBack(Message message)
+  {
+    support.firePropertyChange("MessageBack", null, message);
   }
 
   @Override public void addListener(String name, PropertyChangeListener listener)

@@ -1,11 +1,10 @@
 package server.servermodel.login_register;
 
-import client.networking.RMIClient;
 import server.networking.RMIRMIServer;
 import shared.networking.ClientCallBack;
+import shared.util.Message;
 import shared.util.User;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -15,8 +14,11 @@ public class Login_RegisterManager implements Login_Register
   private List<User> registerdUsers;
   private List<User> onlineUsers;
   private List<ClientCallBack> clients;
+  private List<String> messageList;
 
   private RMIRMIServer server;
+  private String previusToClient = "";
+  private String previusFromClient = "";
 
   public Login_RegisterManager(RMIRMIServer rmirmiServer)
   {
@@ -27,8 +29,10 @@ public class Login_RegisterManager implements Login_Register
     registerdUsers = new ArrayList<>();
     registerdUsers.add(new User("Karlo", "Karlo123"));
     registerdUsers.add(new User("Gosia", "Gosia123"));
+    registerdUsers.add(new User("Lukas", "Lukas123"));
 
     onlineUsers = new ArrayList<>();
+    messageList = new ArrayList<>();
 
     Runnable runnable = () -> {
       while (true)
@@ -45,12 +49,11 @@ public class Login_RegisterManager implements Login_Register
           catch (ConcurrentModificationException e)
           {
             break;
-            //e.printStackTrace();
           }
         }
         try
         {
-          Thread.sleep(1000);
+          Thread.sleep(100);
         }
         catch (InterruptedException e)
         {
@@ -65,8 +68,6 @@ public class Login_RegisterManager implements Login_Register
 
   @Override public void loginRequest(String username, String password, ClientCallBack rmiClient)
   {
-    //System.out.println("LoginRequest in server model > " + username + " " + password);
-
     String result = null;
     for (User onlineUser : onlineUsers)
     {
@@ -88,7 +89,10 @@ public class Login_RegisterManager implements Login_Register
           result = "OK";
           onlineUsers.add(user);
           clients.add(rmiClient);
+
           System.out.println("Online users in server model > " + onlineUsers);
+
+          sendUpdatedOnlineUserList(onlineUsers, clients);
           break;
         }
         else
@@ -98,9 +102,13 @@ public class Login_RegisterManager implements Login_Register
     }
   }
 
+  private void sendUpdatedOnlineUserList(List<User> onlineUsers, List<ClientCallBack> clients)
+  {
+    server.sendUpdatedOnlineUserList(onlineUsers, clients);
+  }
+
   @Override public void registerRequest(String username, String password, String repeatPassword, ClientCallBack rmiClient)
   {
-    //System.out.println(username + " " + password + " " + repeatPassword + " " + rmiClient);
     String result = null;
     for (User registerdUser : registerdUsers)
     {
@@ -124,13 +132,11 @@ public class Login_RegisterManager implements Login_Register
         }
       }
     }
-    //System.out.println("Server result to register > " + result);
     server.registerResult(result, rmiClient);
   }
 
   @Override public void removeClient(ClientCallBack client)
   {
-    System.out.println(onlineUsers);
     for (int x = 0; x < clients.size(); x++)
     {
       if(clients.get(x).equals(client))
@@ -138,9 +144,79 @@ public class Login_RegisterManager implements Login_Register
         System.out.println("User disconnected > " + onlineUsers.get(x).getUsername());
         clients.remove(x);
         onlineUsers.remove(x);
+        sendUpdatedOnlineUserList(onlineUsers, clients);
         break;
       }
     }
-    System.out.println(onlineUsers);
+  }
+
+  @Override public void onlineUsersRequest()
+  {
+    sendUpdatedOnlineUserList(onlineUsers, clients);
+  }
+
+  @Override public void sendMessage(Message message)
+  {
+    if(previusFromClient.equals(message.getFromUser()) && previusToClient.equals(message.getToUser()) ||
+        previusToClient.equals(message.getFromUser()) && previusFromClient.equals(message.getToUser()))
+    {
+      messageList.add(message.getFromUser());
+      messageList.add(message.getToUser());
+      messageList.add(message.getText());
+      messageList.add(message.getDate_time());
+
+      ClientCallBack fromClient = null;
+      ClientCallBack toClient = null;
+
+      for (int x = 0; x < onlineUsers.size(); x++)
+      {
+        if (message.getFromUser().equals(onlineUsers.get(x).getUsername()))
+        {
+          fromClient = clients.get(x);
+        }
+        else if (message.getToUser().equals(onlineUsers.get(x).getUsername()))
+        {
+          toClient = clients.get(x);
+        }
+      }
+
+      server.messageBack(fromClient, toClient, message);
+
+      messageList = new ArrayList<>();
+      previusFromClient = message.getFromUser();
+      previusToClient = message.getToUser();
+    }
+    else
+    {
+      ClientCallBack fromClient = null;
+      ClientCallBack toClient = null;
+
+      for (int x = 0; x < onlineUsers.size(); x++)
+      {
+        if (message.getFromUser().equals(onlineUsers.get(x).getUsername()))
+        {
+          fromClient = clients.get(x);
+        }
+        else if (message.getToUser().equals(onlineUsers.get(x).getUsername()))
+        {
+          toClient = clients.get(x);
+        }
+      }
+
+      messageList = new ArrayList<>();
+      server.messageBack(fromClient, toClient, new Message("", "", "", ""));
+
+      messageList.add(message.getFromUser());
+      messageList.add(message.getToUser());
+      messageList.add(message.getText());
+      messageList.add(message.getDate_time());
+
+
+      server.messageBack(fromClient, toClient, message);
+
+      messageList = new ArrayList<>();
+      previusFromClient = message.getFromUser();
+      previusToClient = message.getToUser();
+    }
   }
 }

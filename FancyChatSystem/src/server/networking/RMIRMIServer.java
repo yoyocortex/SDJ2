@@ -1,16 +1,15 @@
 package server.networking;
 
-import client.networking.RMIClient;
 import server.servermodel.login_register.Login_Register;
 import server.servermodel.login_register.Login_RegisterManager;
 import shared.networking.ClientCallBack;
 import shared.networking.RMIServer;
+import shared.util.Message;
+import shared.util.User;
 
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public class RMIRMIServer implements RMIServer
@@ -39,6 +38,16 @@ public class RMIRMIServer implements RMIServer
   @Override public void registerRequest(String username, String password, String repeatPassword, ClientCallBack rmiClient)
   {
     loginRegister.registerRequest(username, password, repeatPassword, rmiClient);
+  }
+
+  @Override public void onlineUsersRequest()
+  {
+    loginRegister.onlineUsersRequest();
+  }
+
+  @Override public void sendMessage(Message message)
+  {
+    loginRegister.sendMessage(message);
   }
 
   public void loginResult(String loginResult, ClientCallBack rmiClient)
@@ -74,7 +83,36 @@ public class RMIRMIServer implements RMIServer
     catch (ConnectException e)
     {
       loginRegister.removeClient(client);
-      //e.printStackTrace();
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  public void sendUpdatedOnlineUserList(List<User> onlineUsers, List<ClientCallBack> clients)
+  {
+    for (ClientCallBack client : clients)
+    {
+      try
+      {
+        client.sendUpdatedOnlineUserList(onlineUsers);
+      }
+      catch (RemoteException e)
+      {
+        System.out.println("Disconnect this client!");
+        loginRegister.removeClient(client);
+        //e.printStackTrace();
+      }
+    }
+  }
+
+  public void messageBack(ClientCallBack fromClient, ClientCallBack toClient, Message message)
+  {
+    try
+    {
+      fromClient.messageBack(message);
+      toClient.messageBack(message);
     }
     catch (RemoteException e)
     {

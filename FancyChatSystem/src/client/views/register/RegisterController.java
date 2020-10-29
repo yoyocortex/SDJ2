@@ -58,7 +58,6 @@ public class RegisterController
 
   @FXML
   void onRegisterButton(ActionEvent event) {
-    System.out.println("On register button.");
     registerViewModel.registerRequest();
   }
 }
