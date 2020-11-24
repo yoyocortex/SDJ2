@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FancyChatSystem/FancyChatSystem.iml" filepath="$PROJECT_DIR$/FancyChatSystem/FancyChatSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Kingdom/Kingdom.iml" filepath="$PROJECT_DIR$/Kingdom/Kingdom.iml" />
       <module fileurl="file://$PROJECT_DIR$/Memory/Memory.iml" filepath="$PROJECT_DIR$/Memory/Memory.iml" />
       <module fileurl="file://$PROJECT_DIR$/MemoryServerClient/MemoryServerClient.iml" filepath="$PROJECT_DIR$/MemoryServerClient/MemoryServerClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/SJD 2.iml" filepath="$PROJECT_DIR$/SJD 2.iml" />
