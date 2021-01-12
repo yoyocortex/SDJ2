@@ -12,18 +12,8 @@ public class WaitingRoom implements PropertyChangeSubject, Runnable{
     }
 
     @Override
-    public void addPropertyChangeListener(String name, PropertyChangeListener listener) {
-        support.addPropertyChangeListener(name, listener);
-    }
-
-    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
-    }
-
-    @Override
-    public void removePropertyChangeListener(String name, PropertyChangeListener listener) {
-        support.removePropertyChangeListener(name, listener);
     }
 
     @Override

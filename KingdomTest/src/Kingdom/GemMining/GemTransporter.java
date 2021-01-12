@@ -3,7 +3,6 @@ package Kingdom.GemMining;
 import Kingdom.Catalogue;
 import Kingdom.Collection.GemDeposit;
 import Kingdom.TreasureRoom.TreasureRoomDoor;
-import Kingdom.TreasureRoom.TreasureRoomGuardsman;
 import Kingdom.Valuable.Valuable;
 
 import java.util.ArrayList;

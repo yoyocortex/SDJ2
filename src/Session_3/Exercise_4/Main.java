@@ -5,12 +5,12 @@ public class Main
   public static void main(String[] args)
   {
     WaitingRoom waitingRoom = new WaitingRoom();
-    Patient patient = new Patient(2, waitingRoom);
-    Patient patient1 = new Patient(3, waitingRoom);
-    Patient patient2 = new Patient(1, waitingRoom);
-    Patient patient3 = new Patient(4, waitingRoom);
-    Patient patient4 = new Patient(5, waitingRoom);
-    Patient patient5 = new Patient(6, waitingRoom);
+    Patient patient = new Patient(2);
+    Patient patient1 = new Patient(3);
+    Patient patient2 = new Patient(1);
+    Patient patient3 = new Patient(4);
+    Patient patient4 = new Patient(5);
+    Patient patient5 = new Patient(6);
     waitingRoom.addListener(patient);
     waitingRoom.addListener(patient1);
     waitingRoom.addListener(patient2);

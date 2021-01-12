@@ -1,5 +1,6 @@
 package Kingdom;
 
+import Kingdom.Catalogue;
 import Kingdom.TreasureRoom.TreasureRoomDoor;
 import Kingdom.Valuable.Valuable;
 
